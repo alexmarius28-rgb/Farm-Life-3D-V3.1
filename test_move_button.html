@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Move Button</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 20px;
+            background: #333;
+            color: white;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .log {
+            background: #111;
+            padding: 10px;
+            border: 1px solid #666;
+            height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .status {
+            background: #222;
+            padding: 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Move Button Test</h1>
+    
+    <div class="status">
+        <div>moveMode status: <span id="moveMode-status">false</span></div>
+        <div>Move button class: <span id="button-class">none</span></div>
+    </div>
+    
+    <div>
+        <button id="move-btn" style="background: #95a5a6; padding: 15px; border-radius: 12px; color: white; border: none;">
+            Toggle Move Mode
+        </button>
+    </div>
+    
+    <button onclick="clearLog()">Clear Log</button>
+    
+    <div class="log" id="log"></div>
+
+    <script>
+        let moveMode = false;
+        
+        function log(msg) {
+            const logEl = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logEl.textContent += `[${timestamp}] ${msg}\n`;
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+        
+        function clearLog() {
+            document.getElementById('log').textContent = '';
+        }
+        
+        window.toggleMoveMode = function() {
+            log("toggleMoveMode called");
+            moveMode = !moveMode;
+            log("moveMode is now: " + moveMode);
+            
+            const btn = document.getElementById('move-btn');
+            if (btn) {
+                if (moveMode) {
+                    btn.classList.add('active-move');
+                    btn.style.background = 'linear-gradient(135deg, #3498db, #2980b9)';
+                    log("Move mode activated - button updated");
+                } else {
+                    btn.classList.remove('active-move');
+                    btn.style.background = '#95a5a6';
+                    log("Move mode deactivated - button restored");
+                }
+            } else {
+                log("ERROR: move-btn not found!");
+            }
+            
+            // Update status
+            document.getElementById('moveMode-status').textContent = moveMode;
+            document.getElementById('button-class').textContent = btn ? btn.className : "N/A";
+        };
+        
+        // Setup event listener on page load
+        window.addEventListener('load', function() {
+            log("Page loaded - setting up event listener");
+            const moveBtn = document.getElementById('move-btn');
+            if (moveBtn) {
+                moveBtn.addEventListener('click', function(e) {
+                    log("Move button clicked via event listener");
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.toggleMoveMode();
+                });
+                log("Event listener attached successfully");
+            } else {
+                log("ERROR: Could not find move-btn element!");
+            }
+        });
+    </script>
+</body>
+</html>
